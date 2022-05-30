@@ -46,6 +46,14 @@ module.exports = {
     filename: `js/[name]${isDev ? '' : '.[hash:8]'}.js`,
     path: path.resolve(PROJECT_PATH, './dist'),
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+    alias: {
+      Src: resolve(PROJECT_PATH, './src'),
+      Components: resolve(PROJECT_PATH, './src/components'),
+      Utils: resolve(PROJECT_PATH, './src/utils'),
+    },
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(PROJECT_PATH, './public/index.html'),
