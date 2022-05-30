@@ -1,10 +1,15 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
+const WebpackBar = require('webpackbar')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const { PROJECT_PATH, isDev } = require('../constant')
 
 const getCssLoaders = (importLoaders) => [
-  'style-loader',
+  // 'style-loader',
+  isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
   {
     loader: 'css-loader',
     options: {
@@ -49,9 +54,9 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
     alias: {
-      Src: resolve(PROJECT_PATH, './src'),
-      Components: resolve(PROJECT_PATH, './src/components'),
-      Utils: resolve(PROJECT_PATH, './src/utils'),
+      Src: path.resolve(PROJECT_PATH, './src'),
+      Components: path.resolve(PROJECT_PATH, './src/components'),
+      Utils: path.resolve(PROJECT_PATH, './src/utils'),
     },
   },
   plugins: [
@@ -75,6 +80,23 @@ module.exports = {
             minifyURLs: true,
             useShortDoctype: true,
           },
+    }),
+    new CopyPlugin([
+      {
+        context: path.resolve(PROJECT_PATH, './public'),
+        from: '*',
+        to: path.resolve(PROJECT_PATH, './dist'),
+        toType: 'dir',
+      },
+    ]),
+    new WebpackBar({
+      name: isDev ? '正在启动' : '正在打包',
+      color: '#fa8c16',
+    }),
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        configFile: path.resolve(PROJECT_PATH, './tsconfig.json'),
+      },
     }),
   ],
   module: {
@@ -135,7 +157,9 @@ module.exports = {
       {
         test: /\.(tsx?|js)$/,
         loader: 'babel-loader',
-        options: { cacheDirectory: true },
+        options: {
+          cacheDirectory: true,
+        },
         exclude: /node_modules/,
       },
     ],

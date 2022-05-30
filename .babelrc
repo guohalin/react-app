@@ -10,7 +10,7 @@
     "@babel/preset-react",
     "@babel/preset-typescript"
   ],
-  "plungins": [
+  "plugins": [
     [
       "@babel/plugin-transform-runtime",
       {
